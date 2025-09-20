@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // Create a central API client
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/', // FastAPI backend URL
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/', // FastAPI backend URL from .env (Vite)
   headers: {
     'Content-Type': 'application/json',
   },

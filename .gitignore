@@ -32,7 +32,7 @@ cache/
 *.log
 logs/
 debug.log
-gemini-api-key.json
+
 legal-firebase.json
 # ---- OS-specific ----
 .DS_Store

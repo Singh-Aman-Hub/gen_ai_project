@@ -88,7 +88,7 @@ async def summarize_document(doc_id: str):
     chunks = chunk_text(text)
     # Use Gemini 2.5 Flash via Langchain
     import os
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent / "gemini-api-key.json")
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent.parent / "legal-firebase.json")
     llm = ChatVertexAI(
         model="gemini-2.5-flash-lite",
         temperature=0.1,

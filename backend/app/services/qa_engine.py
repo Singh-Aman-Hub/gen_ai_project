@@ -55,7 +55,7 @@ async def chat_with_documents(doc_ids, query, user_id=None):
     combined_context = "\n\n".join(all_context)
     if not combined_context:
         return "No relevant information found in your documents."
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent / "gemini-api-key.json")
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent.parent / "legal-firebase.json")
     llm = ChatVertexAI(
         model="gemini-2.5-flash-lite",
         temperature=0.1,
@@ -107,7 +107,7 @@ async def chat_with_document(doc_id: str, query: str):
     results = store.similarity_search_with_score(query, k=5)
     context = "\n\n".join([doc.page_content.strip() for doc, score in results if score >= 0.2])
     # RAG prompt
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent / "gemini-api-key.json")
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent.parent / "legal-firebase.json")
     llm = ChatVertexAI(
         model="gemini-2.5-flash-lite",
         temperature=0.1,
