@@ -1,11 +1,29 @@
-# backend/requirements.txt
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
 Pillow
 pytesseract
 PyPDF2
+python-docx
+pypdf
 transformers
+torch
+numpy
+sentence-transformers
+langchain
+langchain-core
+langchain-community
+langchain-google-vertexai
+langchain-huggingface
+faiss-cpu
 google-cloud-firestore
+google-cloud-aiplatform
 google-auth
+python-multipart
+httpx
 python-dotenv
+tiktoken
+streamlit
+# System dependencies (install separately)
+# tesseract-ocr (via brew on macOS)
+# For Mac M1: brew install tesseract
