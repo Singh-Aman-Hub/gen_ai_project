@@ -1,0 +1,43 @@
+# ---- Node.js ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/*
+
+# ---- Python ----
+env2/                # Ignore Python virtual environment
+__pycache__/         # Ignore Python cache
+*.pyc
+*.pyo
+*.pyd
+
+# ---- Build & Cache ----
+dist/
+build/
+.cache/
+.next/
+out/
+coverage/
+data/
+cache/
+
+# ---- Environment & Config ----
+# Keep .env (DO NOT IGNORE)
+.env
+
+
+# ---- Logs ----
+*.log
+logs/
+debug.log
+gemini-api-key.json
+legal-firebase.json
+# ---- OS-specific ----
+.DS_Store
+Thumbs.db
+
+# ---- Other ----
+*.swp
+*.swo

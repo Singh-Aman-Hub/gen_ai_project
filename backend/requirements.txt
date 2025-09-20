@@ -1,0 +1,8 @@
+# backend/requirements.txt
+fastapi
+uvicorn
+pydantic
+Pillow
+pytesseract
+PyPDF2
+transformers
