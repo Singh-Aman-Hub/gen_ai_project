@@ -6,3 +6,6 @@ Pillow
 pytesseract
 PyPDF2
 transformers
+google-cloud-firestore
+google-auth
+python-dotenv
