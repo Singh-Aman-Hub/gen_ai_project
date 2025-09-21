@@ -3,7 +3,7 @@ services:
     name: legal-document-assistant
     env: python
     buildCommand: "cd backend && pip install -r requirements.txt"
-    startCommand: "cd backend && ./start.sh"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: CACHE_DIR
         value: /tmp/cache
