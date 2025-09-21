@@ -1,20 +1,20 @@
-# Route to fetch all documents for a user
-from app.services.firestore_manager import get_documents_by_user_id
-
-
-from app.services.firestore_manager import get_user_by_email
-# Login route: authenticate user by email and password
-
 # backend/app/main.py
 from fastapi import FastAPI, UploadFile, File, HTTPException, Body, Form
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.document_processor import process_document
-from app.services.summarizer import summarize_document
-from app.services.qa_engine import chat_with_documents
-from app.services.firestore_manager import save_user, save_document_summary
 import os
 import uvicorn
+
+# Import with error handling
+try:
+    from app.services.firestore_manager import get_documents_by_user_id, get_user_by_email, save_user, save_document_summary
+    from app.services.document_processor import process_document
+    from app.services.summarizer import summarize_document
+    from app.services.qa_engine import chat_with_documents
+    IMPORTS_SUCCESSFUL = True
+except ImportError as e:
+    print(f"Import error: {e}")
+    IMPORTS_SUCCESSFUL = False
 
 app = FastAPI(title="Legal Document Assistant API")
 
@@ -25,8 +25,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+async def root():
+    return {"message": "Legal Document Assistant API", "status": "running", "imports": IMPORTS_SUCCESSFUL}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "port": os.environ.get("PORT", "not_set"), "imports": IMPORTS_SUCCESSFUL}
+
 @app.get("/documents/user/{user_id}")
 async def get_user_documents(user_id: str):
+    if not IMPORTS_SUCCESSFUL:
+        raise HTTPException(status_code=500, detail="Service imports failed")
     docs = get_documents_by_user_id(user_id)
     return {"documents": docs}
 
@@ -36,6 +46,8 @@ async def upload_document(
     user_id: str = Form(None),
     user_id_body: str = Body(None)
 ):
+    if not IMPORTS_SUCCESSFUL:
+        raise HTTPException(status_code=500, detail="Service imports failed")
     # Accept user_id from either Form (frontend) or Body (Swagger UI)
     user_id = user_id or user_id_body
     print("Received user_id:", user_id)
@@ -52,6 +64,8 @@ async def upload_document(
 
 @app.get("/analysis/{documentId}")
 async def get_analysis(documentId: str):
+    if not IMPORTS_SUCCESSFUL:
+        raise HTTPException(status_code=500, detail="Service imports failed")
     try:
         summary = await summarize_document(documentId)
         return JSONResponse(content=summary)
@@ -62,6 +76,8 @@ async def get_analysis(documentId: str):
 # New chat route: user_id and query
 @app.post("/chat/user")
 async def chat_user(user_id: str = Body(...), query: str = Body(...)):
+    if not IMPORTS_SUCCESSFUL:
+        raise HTTPException(status_code=500, detail="Service imports failed")
     from app.services.firestore_manager import get_documents_by_user_id
     docs = get_documents_by_user_id(user_id)
     doc_ids = [d["doc_id"] for d in docs if d.get("doc_id")]
@@ -73,13 +89,18 @@ async def chat_user(user_id: str = Body(...), query: str = Body(...)):
 
 @app.post("/auth/register")
 async def register(name: str = Body(...), email: str = Body(...), password: str = Body(...)):
+    if not IMPORTS_SUCCESSFUL:
+        raise HTTPException(status_code=500, detail="Service imports failed")
     try:
         user_id = save_user(name, email, password)
         return {"message": "User registered successfully", "user": {"id": user_id, "name": name, "email": email}}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/auth/login")
 async def login(email: str = Body(...), password: str = Body(...)):
+    if not IMPORTS_SUCCESSFUL:
+        raise HTTPException(status_code=500, detail="Service imports failed")
     user = get_user_by_email(email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
