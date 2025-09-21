@@ -1,6 +1,6 @@
 # backend/app/services/summarizer.py
 from app.models import AnalysisReport
-import re, json
+import re, json, os
 from langchain_google_vertexai import ChatVertexAI
 from langchain.prompts import PromptTemplate
 from app.services.extractor import Extractor
@@ -81,14 +81,16 @@ def coerce_report_fields(result):
 
 async def summarize_document(doc_id: str):
     # For MVP, load extracted text from cache
-    cache_path = Path("../cache") / f"extract_{doc_id}.txt"
+    cache_dir = os.environ.get("CACHE_DIR", "/tmp/cache")
+    cache_path = Path(cache_dir) / f"extract_{doc_id}.txt"
     if not cache_path.exists():
         raise FileNotFoundError("Document not found in cache.")
     text = cache_path.read_text(encoding="utf-8")
     chunks = chunk_text(text)
     # Use Gemini 2.5 Flash via Langchain
-    import os
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent.parent / "legal-firebase.json")
+    # Set credentials if not already set
+    if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(Path(__file__).parent.parent.parent / "legal-firebase.json")
     llm = ChatVertexAI(
         model="gemini-2.5-flash-lite",
         temperature=0.1,

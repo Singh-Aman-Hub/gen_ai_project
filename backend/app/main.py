@@ -13,6 +13,8 @@ from app.services.document_processor import process_document
 from app.services.summarizer import summarize_document
 from app.services.qa_engine import chat_with_documents
 from app.services.firestore_manager import save_user, save_document_summary
+import os
+import uvicorn
 
 app = FastAPI(title="Legal Document Assistant API")
 
@@ -84,3 +86,8 @@ async def login(email: str = Body(...), password: str = Body(...)):
     if user.get("password") != password:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"message": "Login successful", "user": {"id": user.get("id"), "name": user.get("name"), "email": user.get("email")}}
+
+# Add startup code for Render deployment
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: legal-document-assistant
+    env: python
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && ./start.sh"
+    envVars:
+      - key: CACHE_DIR
+        value: /tmp/cache
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /opt/render/project/src/backend/legal-firebase.json

@@ -6,7 +6,9 @@ from fastapi import UploadFile
 from app.utils import file_fingerprint
 from app.services.extractor import Extractor
 
-CACHE_DIR = Path(os.getenv("CACHE_DIR", "../cache"))
+CACHE_DIR = Path(os.getenv("CACHE_DIR", "/tmp/cache"))
+# Ensure cache directory exists
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 extractor = Extractor(CACHE_DIR)
 

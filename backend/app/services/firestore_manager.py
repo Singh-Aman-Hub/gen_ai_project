@@ -31,10 +31,21 @@ from google.cloud import firestore
 import uuid
 import os
 
-# Fix: Use relative path from backend/app/services to backend/legal-firebase.json
-DB_PATH = os.path.join(os.path.dirname(__file__), '../../legal-firebase.json')
+# Fix: Use environment variable for production, fallback to local file
+DB_PATH = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", 
+                        os.path.join(os.path.dirname(__file__), '../../legal-firebase.json'))
 
-db = firestore.Client.from_service_account_json(DB_PATH)
+# Initialize Firestore client
+try:
+    if os.path.exists(DB_PATH):
+        db = firestore.Client.from_service_account_json(DB_PATH)
+    else:
+        # For production, use default credentials
+        db = firestore.Client()
+except Exception as e:
+    print(f"Firestore initialization error: {e}")
+    # Fallback to default credentials
+    db = firestore.Client()
 
 
 def save_user(name, email, password):
