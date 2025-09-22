@@ -108,7 +108,4 @@ async def login(email: str = Body(...), password: str = Body(...)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"message": "Login successful", "user": {"id": user.get("id"), "name": user.get("name"), "email": user.get("email")}}
 
-# Add startup code for Render deployment
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+# App is ready for deployment
