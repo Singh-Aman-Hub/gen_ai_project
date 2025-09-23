@@ -109,3 +109,7 @@ async def login(email: str = Body(...), password: str = Body(...)):
     return {"message": "Login successful", "user": {"id": user.get("id"), "name": user.get("name"), "email": user.get("email")}}
 
 # App is ready for deployment
+
+if _name_ == "_main_":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
