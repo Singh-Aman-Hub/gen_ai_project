@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import uvicorn
+app = FastAPI(title="Legal Document Assistant API")
 
 # Import with error handling
 try:
@@ -16,15 +17,9 @@ except ImportError as e:
     print(f"Import error: {e}")
     IMPORTS_SUCCESSFUL = False
 
-app = FastAPI(title="Legal Document Assistant API")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+
 @app.get("/")
 async def root():
     return {"message": "Legal Document Assistant API", "status": "running", "imports": IMPORTS_SUCCESSFUL}
@@ -110,6 +105,6 @@ async def login(email: str = Body(...), password: str = Body(...)):
 
 # App is ready for deployment
 
-if _name_ == "_main_":
-    port = int(os.environ.get("PORT", 8000))
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8001))
     uvicorn.run("app.main:app", host="0.0.0.0", port=port)
