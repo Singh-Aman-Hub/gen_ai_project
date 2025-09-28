@@ -5,8 +5,8 @@
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node src/server.js"
+    "start": "node --max-old-space-size=2048 src/server.js",
+    "dev": "node --max-old-space-size=2048 src/server.js"
   },
   "engines": {
     "node": ">=18.0.0"

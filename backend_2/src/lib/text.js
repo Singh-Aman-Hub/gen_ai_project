@@ -1,6 +1,6 @@
 const pdfParse = require('pdf-parse');
 
-function chunkText(text, maxLen = 1000, overlap = 200) {
+function chunkText(text, maxLen = 800, overlap = 100) {
   const chunks = [];
   let i = 0;
   while (i < text.length) {
@@ -10,12 +10,12 @@ function chunkText(text, maxLen = 1000, overlap = 200) {
     if (i < 0) i = 0;
     if (i >= text.length) break;
   }
-  return chunks.filter((t)=> t.trim().length > 0);
+  return chunks.filter((t)=> t.trim().length >= 40).slice(0, 200); // cap chunks
 }
 
 async function extractPdfText(buffer) {
   const data = await pdfParse(buffer);
-  return data.text || '';
+  return (data.text || '').slice(0, 500000); // cap text size
 }
 
 module.exports = { chunkText, extractPdfText };

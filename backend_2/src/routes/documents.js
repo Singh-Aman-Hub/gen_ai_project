@@ -12,6 +12,23 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 const db = getFirestore();
 
+async function embedInBatches(chunks, batchSize = 8) {
+  const vectors = [];
+  for (let i = 0; i < chunks.length; i += batchSize) {
+    const batch = chunks.slice(i, i + batchSize);
+    for (const c of batch) {
+      try {
+        const vec = await embedTexts([c]);
+        vectors.push(vec);
+      } catch (e) {
+        console.error('Embed error for chunk', i, e);
+        vectors.push([]);
+      }
+    }
+  }
+  return vectors;
+}
+
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const userId = req.body.user_id || req.body.userId;
@@ -35,15 +52,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     fs.writeFileSync(cachePath, text, 'utf-8');
 
     const chunks = chunkText(text);
-    // Embed each chunk individually
-    const vectors = [];
-    for (const c of chunks) {
-      const vec = await embedTexts([c]);
-      vectors.push(vec);
-    }
+    const vectors = await embedInBatches(chunks, 6);
     await saveEmbeddings(docId, chunks, vectors);
 
-    // Summarize
     const prompt = `Summarize this legal document in clear bullet points for a non-lawyer:\n\n${chunks.slice(0, 10).join('\n\n')}`;
     const summaryText = await chatGemini(prompt);
 
